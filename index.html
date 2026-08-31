@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Saptarshi Das — Salesforce Application Architect &amp; Platform Data Architect</title>
+<meta name="description" content="Saptarshi Das — Salesforce Certified Application Architect and Platform Data Architect. 10+ years in IT, 8+ years on the Salesforce platform. Kolkata, India.">
+<style>
+/* ============================================================
+   TOKENS
+   ============================================================ */
+:root{
+  --ink-900:#060B1A; --ink-850:#080F22; --ink-800:#0B1428; --ink-700:#111C36;
+  --ink-600:#1A2745; --line:#22314F;
+  --paper:#F7F9FC; --paper-2:#EEF2F8;
+  --azure:#2E7DFF; --aqua:#22D3EE; --violet:#7C5CFF; --ember:#FF7A4D;
+  --serif:Georgia,'Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,'Times New Roman',serif;
+  --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --wrap:1120px; --gut:clamp(20px,5vw,48px);
+  --r-sm:8px; --r-md:14px; --r-lg:22px;
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+html[data-theme="dark"]{
+  --bg:var(--ink-900); --bg-2:var(--ink-850); --surface:rgba(255,255,255,.045);
+  --surface-2:rgba(255,255,255,.07); --stroke:rgba(255,255,255,.10);
+  --stroke-2:rgba(255,255,255,.18);
+  --fg:#EAF0FA; --fg-2:#A9B8D0; --fg-3:#6F7F9C;
+  --glow:0 24px 70px -28px rgba(46,125,255,.55);
+  --net-bg:#060B1A;
+}
+html[data-theme="light"]{
+  --bg:var(--paper); --bg-2:#FFFFFF; --surface:rgba(6,11,26,.028);
+  --surface-2:rgba(6,11,26,.05); --stroke:rgba(6,11,26,.10);
+  --stroke-2:rgba(6,11,26,.20);
+  --fg:#0A1428; --fg-2:#3F5170; --fg-3:#75859F;
+  --glow:0 24px 60px -30px rgba(10,20,40,.28);
+  --net-bg:#F7F9FC;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);
+  font-size:16.5px;line-height:1.65;letter-spacing:.002em;
+  -webkit-font-smoothing:antialiased;overflow-x:hidden;
+  transition:background .5s var(--ease),color .5s var(--ease);
+}
+img,svg,canvas{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--aqua);outline-offset:3px;border-radius:4px}
+
+/* ---------- type ---------- */
+.serif{font-family:var(--serif)}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:400;letter-spacing:-.018em;margin:0}
+h1{font-size:clamp(2.9rem,8.2vw,6.1rem);line-height:.95}
+h2{font-size:clamp(1.9rem,4.3vw,3.15rem);line-height:1.08}
+h3{font-size:clamp(1.18rem,2.1vw,1.5rem);line-height:1.25}
+p{margin:0 0 1.05em}
+.lede{font-size:clamp(1.06rem,1.9vw,1.26rem);line-height:1.62;color:var(--fg-2);max-width:64ch}
+.small{font-size:.86rem;line-height:1.55;color:var(--fg-3)}
+.mark{
+  background:linear-gradient(100deg,var(--aqua),var(--azure) 45%,var(--violet));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+
+/* ---------- layout ---------- */
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 var(--gut)}
+section{position:relative;padding:clamp(72px,10vw,132px) 0}
+.sec-rule{border-top:1px solid var(--stroke)}
+.sec-head{display:flex;flex-direction:column;gap:14px;margin-bottom:clamp(32px,5vw,58px)}
+.sec-idx{
+  display:inline-flex;align-items:center;gap:11px;font-size:.78rem;letter-spacing:.13em;
+  color:var(--fg-3);font-variant-numeric:tabular-nums;
+}
+.sec-idx::before{content:"";width:26px;height:1px;background:var(--stroke-2)}
+.grid{display:grid;gap:clamp(14px,2vw,20px)}
+
+/* ---------- glass card ---------- */
+.card{
+  position:relative;background:var(--surface);border:1px solid var(--stroke);
+  border-radius:var(--r-lg);padding:clamp(20px,2.6vw,30px);
+  backdrop-filter:blur(14px) saturate(150%);-webkit-backdrop-filter:blur(14px) saturate(150%);
+  transition:border-color .45s var(--ease),background .45s var(--ease),transform .5s var(--ease);
+}
+.card::after{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(520px circle at var(--mx,50%) var(--my,0%),rgba(46,125,255,.16),transparent 62%);
+  opacity:0;transition:opacity .45s var(--ease);
+}
+.card:hover{border-color:var(--stroke-2);background:var(--surface-2)}
+.card:hover::after{opacity:1}
+
+/* ============================================================
+   NAV
+   ============================================================ */
+.nav{
+  position:fixed;inset:0 0 auto 0;z-index:60;height:64px;display:flex;align-items:center;
+  background:color-mix(in srgb,var(--bg) 72%,transparent);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid transparent;transition:border-color .4s,background .4s;
+}
+.nav.stuck{border-bottom-color:var(--stroke)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px;width:100%}
+.brand{display:flex;align-items:baseline;gap:10px;font-family:var(--serif);font-size:1.02rem;letter-spacing:.01em}
+.brand i{
+  width:7px;height:7px;border-radius:50%;flex:0 0 auto;
+  background:linear-gradient(140deg,var(--aqua),var(--violet));
+}
+.navlinks{display:flex;gap:2px;align-items:center}
+.navlinks a{
+  padding:7px 11px;border-radius:999px;font-size:.845rem;color:var(--fg-3);
+  transition:color .3s,background .3s;
+}
+.navlinks a:hover{color:var(--fg)}
+.navlinks a[aria-current="true"]{color:var(--fg);background:var(--surface-2)}
+.navtools{display:flex;gap:8px;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;
+  height:38px;padding:0 16px;border-radius:999px;border:1px solid var(--stroke-2);
+  background:var(--surface);color:var(--fg);font:inherit;font-size:.85rem;cursor:pointer;
+  transition:background .3s,border-color .3s,transform .3s var(--ease);
+}
+.btn:hover{background:var(--surface-2);border-color:var(--aqua)}
+.btn:active{transform:scale(.97)}
+.btn-i{width:38px;padding:0}
+.btn-solid{
+  border:0;color:#04070F;font-weight:600;
+  background:linear-gradient(110deg,var(--aqua),var(--azure) 60%,var(--violet));
+}
+.btn-solid:hover{filter:brightness(1.08)}
+@media(max-width:860px){.navlinks{display:none}}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{min-height:100svh;display:flex;align-items:flex-end;padding:120px 0 clamp(48px,7vw,84px);overflow:clip}
+#topo{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.9}
+.hero::after{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(80% 55% at 78% 8%,rgba(124,92,255,.20),transparent 70%),
+    radial-gradient(70% 50% at 6% 92%,rgba(34,211,238,.16),transparent 70%),
+    linear-gradient(to bottom,color-mix(in srgb,var(--bg) 30%,transparent) 0%,transparent 28%,color-mix(in srgb,var(--bg) 82%,transparent) 100%);
+}
+.hero .wrap{position:relative;z-index:2;width:100%}
+.eyebrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:26px}
+.chip{
+  display:inline-flex;align-items:center;gap:8px;height:31px;padding:0 13px;
+  border-radius:999px;border:1px solid var(--stroke-2);background:var(--surface);
+  font-size:.79rem;letter-spacing:.02em;color:var(--fg-2);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+.chip b{color:var(--fg);font-weight:600}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 4px rgba(34,211,238,.16)}
+.hero h1{max-width:15ch}
+.hero-roles{
+  margin:22px 0 0;display:flex;flex-wrap:wrap;gap:0 14px;align-items:baseline;
+  font-family:var(--serif);font-size:clamp(1.05rem,2.5vw,1.6rem);color:var(--fg-2);
+}
+.hero-roles span{position:relative;padding-right:14px}
+.hero-roles span:not(:last-child)::after{
+  content:"";position:absolute;right:0;top:.42em;width:1px;height:1em;background:var(--stroke-2);
+}
+.hero-foot{
+  margin-top:clamp(34px,5vw,52px);display:flex;flex-wrap:wrap;gap:14px 26px;align-items:center;
+}
+.hero-meta{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:.9rem;color:var(--fg-3)}
+.hero-meta a:hover{color:var(--aqua)}
+.scrollcue{
+  position:absolute;left:var(--gut);bottom:22px;z-index:2;display:flex;align-items:center;gap:10px;
+  font-size:.74rem;letter-spacing:.14em;color:var(--fg-3)
+}
+.scrollcue i{display:block;width:1px;height:32px;background:linear-gradient(var(--aqua),transparent);animation:cue 2.6s var(--ease) infinite}
+@keyframes cue{0%,100%{transform:scaleY(.35);opacity:.4}50%{transform:scaleY(1);opacity:1}}
+@media(max-width:720px){.scrollcue{display:none}}
+
+/* ---------- hero entrance ---------- */
+.stagger>*{opacity:0;transform:translateY(20px);animation:rise .95s var(--ease) forwards}
+.stagger>*:nth-child(1){animation-delay:.14s}
+.stagger>*:nth-child(2){animation-delay:.26s}
+.stagger>*:nth-child(3){animation-delay:.38s}
+.stagger>*:nth-child(4){animation-delay:.5s}
+.stagger>*:nth-child(5){animation-delay:.62s}
+@keyframes rise{to{opacity:1;transform:none}}
+
+/* ============================================================
+   KPI
+   ============================================================ */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--stroke);border:1px solid var(--stroke);border-radius:var(--r-lg);overflow:hidden}
+.kpi{background:var(--bg);padding:clamp(20px,2.6vw,30px);transition:background .4s}
+.kpi:hover{background:var(--surface)}
+.kpi b{
+  display:block;font-family:var(--serif);font-weight:400;
+  font-size:clamp(2.5rem,5.4vw,3.9rem);line-height:1;letter-spacing:-.03em;
+  font-variant-numeric:tabular-nums;
+}
+.kpi small{display:block;margin-top:11px;font-size:.83rem;color:var(--fg-3);line-height:1.45}
+@media(max-width:780px){.kpis{grid-template-columns:repeat(2,1fr)}}
+
+/* ============================================================
+   SUMMARY
+   ============================================================ */
+.sum{display:grid;grid-template-columns:1.35fr .95fr;gap:clamp(28px,4vw,58px);align-items:start}
+@media(max-width:900px){.sum{grid-template-columns:1fr}}
+.pillars{display:grid;gap:1px;background:var(--stroke);border:1px solid var(--stroke);border-radius:var(--r-md);overflow:hidden}
+.pillar{background:var(--bg);padding:16px 18px}
+.pillar h4{font-size:1rem;margin-bottom:4px}
+.pillar p{margin:0;font-size:.88rem;color:var(--fg-3);line-height:1.5}
+
+/* ============================================================
+   TIMELINE
+   ============================================================ */
+.tl{position:relative;padding-left:clamp(28px,4vw,44px)}
+.tl::before{
+  content:"";position:absolute;left:0;top:6px;bottom:6px;width:2px;border-radius:2px;
+  background:var(--stroke);
+}
+.tl-fill{
+  position:absolute;left:0;top:6px;width:2px;border-radius:2px;height:0;
+  background:linear-gradient(var(--aqua),var(--azure) 45%,var(--violet));
+  transition:height .18s linear;
+}
+.tl-item{position:relative;padding:0 0 clamp(30px,4vw,48px)}
+.tl-item:last-child{padding-bottom:0}
+.tl-item::before{
+  content:"";position:absolute;left:calc(clamp(28px,4vw,44px) * -1 - 5px);top:.62em;
+  width:12px;height:12px;border-radius:50%;background:var(--bg);
+  border:2px solid var(--stroke-2);transition:border-color .5s,box-shadow .5s,transform .5s var(--ease);
+}
+.tl-item.lit::before{
+  border-color:var(--aqua);box-shadow:0 0 0 5px rgba(34,211,238,.15);transform:scale(1.15);
+}
+.tl-when{font-size:.8rem;letter-spacing:.06em;color:var(--fg-3);font-variant-numeric:tabular-nums}
+.tl-role{font-family:var(--serif);font-size:clamp(1.2rem,2.4vw,1.65rem);margin:5px 0 2px}
+.tl-org{font-size:.94rem;color:var(--aqua)}
+.tl-note{margin:9px 0 0;font-size:.93rem;color:var(--fg-2);max-width:60ch}
+.tl-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{
+  font-size:.735rem;padding:4px 10px;border-radius:999px;
+  border:1px solid var(--stroke);background:var(--surface);color:var(--fg-3);
+}
+
+/* ============================================================
+   EXPERTISE
+   ============================================================ */
+.exp-grid{grid-template-columns:repeat(3,1fr)}
+@media(max-width:980px){.exp-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){.exp-grid{grid-template-columns:1fr}}
+.dom h3{margin-bottom:9px}
+.dom p{font-size:.92rem;color:var(--fg-2);margin-bottom:14px}
+.dom ul{margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:6px}
+.dom li{font-size:.755rem;padding:4px 9px;border-radius:6px;background:var(--surface-2);color:var(--fg-3)}
+.dom-n{
+  font-family:var(--serif);font-size:.9rem;color:var(--fg-3);
+  display:block;margin-bottom:12px;font-variant-numeric:tabular-nums;
+}
+
+/* ============================================================
+   CERT JOURNEY (dependency graph)
+   ============================================================ */
+.cj{display:grid;grid-template-columns:1fr 320px;gap:clamp(22px,3vw,38px);align-items:start}
+@media(max-width:940px){.cj{grid-template-columns:1fr}}
+.cj-stage{
+  border:1px solid var(--stroke);border-radius:var(--r-lg);background:var(--surface);
+  padding:clamp(12px,2vw,22px);overflow:hidden;
+}
+#certsvg{width:100%;height:auto}
+.cnode{cursor:pointer}
+.cnode rect{
+  fill:var(--bg-2);stroke:var(--stroke-2);stroke-width:1.2;
+  transition:fill .35s,stroke .35s,filter .35s;
+}
+.cnode text{fill:var(--fg-2);font-family:var(--sans);font-size:11.2px;transition:fill .35s;pointer-events:none}
+.cnode .tier{fill:var(--fg-3);font-size:9.4px;letter-spacing:.07em}
+.cnode:hover rect,.cnode.on rect{stroke:var(--aqua);fill:color-mix(in srgb,var(--aqua) 12%,var(--bg-2))}
+.cnode.on text{fill:var(--fg)}
+.cnode.dim{opacity:.32}
+.cedge{stroke:var(--stroke-2);stroke-width:1.3;fill:none;transition:stroke .35s,stroke-width .35s,opacity .35s}
+.cedge.on{stroke:url(#eg);stroke-width:2.4}
+.cedge.dim{opacity:.16}
+.cj-side .card{padding:20px 22px}
+.cj-side h3{margin-bottom:8px}
+.cj-side p{font-size:.9rem;color:var(--fg-2);margin-bottom:12px}
+.reqlist{margin:0;padding:0;list-style:none;display:grid;gap:7px}
+.reqlist li{
+  display:flex;gap:9px;align-items:flex-start;font-size:.865rem;color:var(--fg-2);
+  padding:8px 11px;border-radius:var(--r-sm);background:var(--surface-2);
+}
+.reqlist li s{
+  flex:0 0 auto;width:15px;height:15px;margin-top:3px;border-radius:4px;
+  background:linear-gradient(140deg,var(--aqua),var(--azure));position:relative;
+}
+.reqlist li s::after{
+  content:"";position:absolute;left:4px;top:6.5px;width:3.5px;height:6.5px;
+  border:1.6px solid #04070F;border-top:0;border-left:0;transform:rotate(42deg);
+}
+
+/* ============================================================
+   SKILLS GALAXY
+   ============================================================ */
+.galaxy{
+  position:relative;border:1px solid var(--stroke);border-radius:var(--r-lg);
+  background:var(--surface);overflow:hidden;
+}
+#net{width:100%;height:min(62vh,540px);display:block;cursor:crosshair}
+.gx-legend{
+  display:flex;flex-wrap:wrap;gap:7px;padding:14px clamp(14px,2vw,20px);
+  border-top:1px solid var(--stroke);
+}
+.lg{
+  display:inline-flex;align-items:center;gap:8px;height:31px;padding:0 13px;border-radius:999px;
+  border:1px solid var(--stroke);background:transparent;color:var(--fg-3);
+  font:inherit;font-size:.78rem;cursor:pointer;transition:all .3s var(--ease);
+}
+.lg i{width:8px;height:8px;border-radius:50%;flex:0 0 auto}
+.lg[aria-pressed="true"]{color:var(--fg);border-color:var(--stroke-2);background:var(--surface-2)}
+.lg[aria-pressed="false"]{opacity:.45}
+.gx-tip{
+  position:absolute;z-index:5;pointer-events:none;opacity:0;transform:translate(-50%,-142%);
+  padding:6px 11px;border-radius:999px;font-size:.79rem;white-space:nowrap;
+  background:var(--bg-2);border:1px solid var(--stroke-2);color:var(--fg);
+  transition:opacity .2s;box-shadow:var(--glow);
+}
+.gx-hint{position:absolute;right:14px;top:12px;z-index:4;font-size:.74rem;color:var(--fg-3);pointer-events:none}
+
+/* ============================================================
+   EXPERIENCE
+   ============================================================ */
+.job{border-top:1px solid var(--stroke)}
+.job:last-of-type{border-bottom:1px solid var(--stroke)}
+.job-btn{
+  width:100%;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;
+  padding:clamp(20px,2.6vw,28px) 0;background:transparent;border:0;color:inherit;
+  font:inherit;text-align:left;cursor:pointer;
+}
+.job-btn:hover .job-role{color:var(--aqua)}
+.job-role{font-family:var(--serif);font-size:clamp(1.14rem,2.3vw,1.55rem);transition:color .35s}
+.job-sub{display:flex;flex-wrap:wrap;gap:4px 16px;margin-top:5px;font-size:.87rem;color:var(--fg-3)}
+.job-sub b{color:var(--fg-2);font-weight:500}
+.job-tog{
+  width:34px;height:34px;flex:0 0 auto;border-radius:50%;border:1px solid var(--stroke-2);
+  position:relative;transition:background .35s,border-color .35s,transform .45s var(--ease);
+}
+.job-tog::before,.job-tog::after{
+  content:"";position:absolute;left:50%;top:50%;background:var(--fg-2);
+  transition:transform .45s var(--ease),background .35s;
+}
+.job-tog::before{width:12px;height:1.4px;transform:translate(-50%,-50%)}
+.job-tog::after{width:1.4px;height:12px;transform:translate(-50%,-50%)}
+.job-btn[aria-expanded="true"] .job-tog{background:var(--surface-2);border-color:var(--aqua);transform:rotate(180deg)}
+.job-btn[aria-expanded="true"] .job-tog::after{transform:translate(-50%,-50%) scaleY(0)}
+.job-body{overflow:hidden;height:0;transition:height .55s var(--ease)}
+.job-inner{padding:0 0 clamp(22px,3vw,32px);max-width:74ch}
+.job-inner ul{margin:0;padding:0;list-style:none;display:grid;gap:11px}
+.job-inner li{position:relative;padding-left:22px;font-size:.945rem;color:var(--fg-2)}
+.job-inner li::before{
+  content:"";position:absolute;left:1px;top:.62em;width:9px;height:1.5px;
+  background:linear-gradient(90deg,var(--aqua),var(--azure));
+}
+
+/* ============================================================
+   AI SECTION
+   ============================================================ */
+.ai{position:relative;overflow:clip}
+.ai::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(65% 70% at 88% 22%,rgba(124,92,255,.17),transparent 70%),
+             radial-gradient(55% 60% at 8% 82%,rgba(34,211,238,.13),transparent 70%);
+}
+.ai>*{position:relative;z-index:1}
+.ai-hero{
+  display:grid;grid-template-columns:minmax(0,1fr) minmax(0,.82fr);
+  gap:clamp(26px,4vw,54px);align-items:center;
+}
+@media(max-width:900px){.ai-hero{grid-template-columns:1fr}}
+.gauge{position:relative;display:grid;place-items:center;aspect-ratio:1;max-width:330px;margin-inline:auto;width:100%}
+.gauge svg{width:100%;height:100%;transform:rotate(-90deg)}
+.gauge-c{fill:none;stroke-linecap:round}
+.gauge-bg{stroke:var(--stroke);stroke-width:9}
+.gauge-fg{stroke:url(#gg);stroke-width:9;transition:stroke-dashoffset 1.9s var(--ease)}
+.gauge-txt{position:absolute;text-align:center}
+.gauge-txt b{
+  display:block;font-family:var(--serif);font-weight:400;letter-spacing:-.03em;
+  font-size:clamp(2.6rem,6vw,3.7rem);line-height:1;font-variant-numeric:tabular-nums;
+}
+.gauge-txt small{display:block;margin-top:8px;font-size:.8rem;color:var(--fg-3);max-width:16ch;margin-inline:auto}
+.toolrow{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tool{
+  display:inline-flex;align-items:center;gap:9px;padding:9px 14px;border-radius:999px;
+  border:1px solid var(--stroke);background:var(--surface);font-size:.845rem;color:var(--fg-2);
+  transition:border-color .35s,transform .45s var(--ease),background .35s;
+}
+.tool:hover{border-color:var(--aqua);background:var(--surface-2);transform:translateY(-2px)}
+.tool i{width:7px;height:7px;border-radius:50%;background:linear-gradient(140deg,var(--aqua),var(--violet))}
+
+/* ============================================================
+   CERT DASHBOARD
+   ============================================================ */
+.dash{grid-template-columns:repeat(4,1fr)}
+@media(max-width:1000px){.dash{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.dash{grid-template-columns:1fr}}
+.dgroup{display:flex;flex-direction:column;gap:14px}
+.dgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.dgroup h3{font-size:1.08rem}
+.dgroup header b{font-family:var(--serif);font-size:1.6rem;color:var(--fg-3);font-variant-numeric:tabular-nums}
+.dgroup ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+.dgroup li{
+  font-size:.86rem;color:var(--fg-2);padding:10px 12px;border-radius:var(--r-sm);
+  background:var(--surface-2);border-left:2px solid var(--stroke-2);transition:border-color .35s,color .35s;
+}
+.dgroup li:hover{border-left-color:var(--aqua);color:var(--fg)}
+.dnote{margin-top:18px;font-size:.85rem;color:var(--fg-3)}
+
+/* ============================================================
+   CONTACT
+   ============================================================ */
+.contact{border-top:1px solid var(--stroke)}
+.c-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:clamp(28px,4vw,64px);align-items:end}
+@media(max-width:860px){.c-grid{grid-template-columns:1fr}}
+.c-list{display:grid;gap:1px;background:var(--stroke);border:1px solid var(--stroke);border-radius:var(--r-md);overflow:hidden}
+.c-row{
+  display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;
+  background:var(--bg);padding:15px 18px;transition:background .35s;
+}
+a.c-row:hover{background:var(--surface)}
+.c-row span{font-size:.78rem;letter-spacing:.08em;color:var(--fg-3)}
+.c-row b{font-weight:500;font-size:.96rem;word-break:break-word}
+.ctas{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+footer{padding:26px 0 40px;border-top:1px solid var(--stroke)}
+.foot{display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;font-size:.8rem;color:var(--fg-3)}
+
+/* ============================================================
+   REVEAL
+   ============================================================ */
+.rv{opacity:0;transform:translateY(26px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv-d1{transition-delay:.08s}.rv-d2{transition-delay:.16s}.rv-d3{transition-delay:.24s}.rv-d4{transition-delay:.32s}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+  .rv{opacity:1;transform:none}
+  .stagger>*{opacity:1;transform:none}
+}
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print{
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff!important;color:#111!important;font-size:10.2pt;line-height:1.42}
+  .nav,.scrollcue,#topo,.gx-legend,.gx-hint,.gx-tip,.ctas,.hero::after,.ai::before,.job-tog,.cj-side{display:none!important}
+  section{padding:9pt 0!important;break-inside:avoid}
+  .hero{min-height:0!important;padding:0 0 10pt!important;display:block}
+  h1{font-size:26pt!important}
+  h2{font-size:14pt!important;margin-bottom:5pt}
+  h3{font-size:11pt!important}
+  .lede,p,li{color:#222!important}
+  .wrap{max-width:none;padding:0}
+  .card,.kpi,.kpis,.pillars,.pillar,.c-list,.c-row,.galaxy,.cj-stage,.dgroup li{
+    background:#fff!important;border-color:#ccc!important;box-shadow:none!important;backdrop-filter:none!important;
+  }
+  .kpis,.dash,.exp-grid{display:grid!important;grid-template-columns:repeat(4,1fr)!important;gap:6pt!important}
+  .exp-grid{grid-template-columns:repeat(3,1fr)!important}
+  .job-body{height:auto!important;overflow:visible!important}
+  .job-inner{padding-bottom:7pt}
+  .sec-idx{color:#777!important}
+  .mark{color:#0B3FA8!important;-webkit-text-fill-color:#0B3FA8}
+  #net{display:none!important}
+  .galaxy{padding:0;border:0}
+  .rv{opacity:1!important;transform:none!important}
+  a{color:#111!important}
+  .tl-org,.dot,.tag{color:#0B3FA8!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== NAV ===================== -->
+<nav class="nav" id="nav">
+  <div class="wrap">
+    <a class="brand" href="#top"><i></i>Saptarshi Das</a>
+    <div class="navlinks" id="navlinks">
+      <a href="#summary">Summary</a>
+      <a href="#timeline">Career</a>
+      <a href="#expertise">Expertise</a>
+      <a href="#journey">Credentials</a>
+      <a href="#galaxy">Skills</a>
+      <a href="#experience">Experience</a>
+      <a href="#ai">AI</a>
+      <a href="#contact">Contact</a>
+    </div>
+    <div class="navtools">
+      <button class="btn btn-i" id="theme" aria-label="Switch to light theme" title="Switch theme">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path id="ticon" d="M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z"/></svg>
+      </button>
+      <button class="btn" id="printbtn">Save as PDF</button>
+    </div>
+  </div>
+</nav>
+
+<!-- ===================== HERO ===================== -->
+<header class="hero" id="top">
+  <canvas id="topo" aria-hidden="true"></canvas>
+  <div class="wrap stagger">
+    <div class="eyebrow">
+      <span class="chip"><i class="dot"></i>Kolkata, India &nbsp;·&nbsp; open to architecture leadership roles</span>
+      <span class="chip"><b>12</b>&nbsp;credentials</span>
+      <span class="chip"><b>10+</b>&nbsp;years in IT</span>
+    </div>
+    <h1>Architecture that holds<br><span class="mark">at enterprise scale.</span></h1>
+    <div class="hero-roles">
+      <span>Salesforce Application Architect</span>
+      <span>Platform Data Architect</span>
+      <span>Technical Lead</span>
+    </div>
+    <p class="lede" style="margin-top:26px">
+      Ten years building on enterprise platforms, eight of them on Salesforce — from Java web services
+      to owning application and data architecture for global programmes at Accenture.
+    </p>
+    <div class="hero-foot">
+      <a class="btn btn-solid" href="#journey">See the credential path</a>
+      <div class="hero-meta">
+        <a href="mailto:saptarshi24695@gmail.com">saptarshi24695@gmail.com</a>
+        <a href="tel:+919775480035">+91 97754 80035</a>
+        <a href="https://www.linkedin.com/in/saptarshidas2" target="_blank" rel="noopener">linkedin.com/in/saptarshidas2</a>
+      </div>
+    </div>
+  </div>
+  <div class="scrollcue"><i></i>SCROLL</div>
+</header>
+
+<!-- ===================== SUMMARY ===================== -->
+<section id="summary" class="sec-rule">
+  <div class="wrap">
+    <div class="kpis rv" id="kpis">
+      <div class="kpi"><b data-count="10" data-suffix="+">0</b><small>Years across enterprise IT</small></div>
+      <div class="kpi"><b data-count="8" data-suffix="+">0</b><small>Years on the Salesforce platform</small></div>
+      <div class="kpi"><b data-count="12">0</b><small>Certifications held — 11 Salesforce, 1 Copado</small></div>
+      <div class="kpi"><b data-count="6">0</b><small>Salesforce clouds delivered against</small></div>
+    </div>
+
+    <div class="sec-head" style="margin-top:clamp(52px,7vw,86px)">
+      <span class="sec-idx">Executive summary</span>
+      <h2>A developer who became an architect<br>without leaving the codebase.</h2>
+    </div>
+
+    <div class="sum">
+      <div>
+        <p class="lede">
+          Salesforce Certified Application Architect and Platform Data Architect, currently operating at
+          Associate Manager and Technical Lead level at Accenture. The work spans both halves of the role:
+          owning application architecture, enterprise data modelling and security and sharing design, while
+          still writing and reviewing the Apex, Lightning Web Components and integration code that carries it.
+        </p>
+        <p class="lede">
+          Delivery has covered Sales, Service, Experience, Consumer Goods, Health and Data Cloud for global
+          enterprise clients — directing offshore pods, setting engineering standards, and taking architecture
+          and roadmap decisions to client leadership for approval.
+        </p>
+        <p class="lede" style="margin-bottom:0">
+          Most recently, primary technical owner of the programme's generative AI engineering initiative,
+          embedding Agentforce Vibes, Claude and GitHub Copilot into the delivery workflow.
+        </p>
+      </div>
+      <div class="pillars rv rv-d2">
+        <div class="pillar"><h4>Application architecture</h4><p>Solution design, technical design reviews, reusable and governor-limit-aware patterns.</p></div>
+        <div class="pillar"><h4>Enterprise data architecture</h4><p>Custom data modelling, governance, migration and mass data operations.</p></div>
+        <div class="pillar"><h4>Security &amp; sharing</h4><p>Multi-country access models, role hierarchy, criteria- and ownership-based sharing.</p></div>
+        <div class="pillar"><h4>Integration architecture</h4><p>REST and SOAP API design, Named Credentials, Platform Events, near real-time exchange.</p></div>
+        <div class="pillar"><h4>Delivery leadership</h4><p>Offshore pods, Agile ceremonies, Severity-1 ownership, hypercare, mentoring.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== TIMELINE ===================== -->
+<section id="timeline" class="sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">Career timeline</span>
+      <h2>Ten years, one direction of travel.</h2>
+    </div>
+    <div class="tl" id="tl">
+      <div class="tl-fill" id="tlfill"></div>
+
+      <article class="tl-item rv">
+        <div class="tl-when">Sep 2024 — Present</div>
+        <h3 class="tl-role">Associate Manager — Salesforce Technical Lead</h3>
+        <div class="tl-org">Accenture</div>
+        <p class="tl-note">Architecture, solution design and offshore execution across multi-cloud and custom-built implementations. Primary technical owner of the programme's generative AI engineering initiative.</p>
+        <div class="tl-tags"><span class="tag">Architecture ownership</span><span class="tag">Multi-cloud</span><span class="tag">Agentforce</span><span class="tag">Offshore delivery</span></div>
+      </article>
+
+      <article class="tl-item rv">
+        <div class="tl-when">Jul 2022 — Aug 2024</div>
+        <h3 class="tl-role">Senior Consultant — Salesforce Developer</h3>
+        <div class="tl-org">Deloitte Digital</div>
+        <p class="tl-note">Complex custom data models, REST integrations with external enterprise systems, and modernisation of legacy Apex through bulkification, SOQL optimisation and trigger-handler patterns.</p>
+        <div class="tl-tags"><span class="tag">Data modelling</span><span class="tag">REST integration</span><span class="tag">Apex modernisation</span><span class="tag">Release discipline</span></div>
+      </article>
+
+      <article class="tl-item rv">
+        <div class="tl-when">May 2021 — Jul 2022</div>
+        <h3 class="tl-role">Salesforce Developer</h3>
+        <div class="tl-org">Accenture Services Pvt Ltd</div>
+        <p class="tl-note">Security and sharing model built on profiles, permission sets, role hierarchy and sharing rules — alongside Apex, Visualforce and LWC/Aura development and sales leadership reporting.</p>
+        <div class="tl-tags"><span class="tag">Security model</span><span class="tag">LWC &amp; Aura</span><span class="tag">Reporting</span><span class="tag">Hypercare</span></div>
+      </article>
+
+      <article class="tl-item rv">
+        <div class="tl-when">Jan 2019 — May 2021</div>
+        <h3 class="tl-role">Salesforce Developer</h3>
+        <div class="tl-org">Cognizant Technology Solutions India Ltd</div>
+        <p class="tl-note">Designed, maintained and optimised a large-scale multi-country Salesforce security model for a globally distributed user base, plus data migration and mass data operations with zero loss at cutover.</p>
+        <div class="tl-tags"><span class="tag">Multi-country sharing</span><span class="tag">Data migration</span><span class="tag">Global rollout</span></div>
+      </article>
+
+      <article class="tl-item rv">
+        <div class="tl-when">Aug 2016 — Dec 2018</div>
+        <h3 class="tl-role">Java Developer</h3>
+        <div class="tl-org">Cognizant Technology Solutions India Ltd</div>
+        <p class="tl-note">Java web services for a secure banking transaction system, with unit and integration test suites in Mockito. The engineering foundation the rest of the platform work is built on.</p>
+        <div class="tl-tags"><span class="tag">Java web services</span><span class="tag">Banking</span><span class="tag">Mockito</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPERTISE ===================== -->
+<section id="expertise" class="sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">Architecture expertise</span>
+      <h2>Six domains the work keeps<br>coming back to.</h2>
+    </div>
+    <div class="grid exp-grid">
+      <article class="card dom rv"><span class="dom-n">01</span><h3>Application architecture</h3><p>Solution design and technical design reviews that hold up when the requirement changes twice before go-live.</p><ul><li>Solution design</li><li>Design reviews</li><li>Reusable patterns</li><li>Governor-limit-aware design</li></ul></article>
+      <article class="card dom rv rv-d1"><span class="dom-n">02</span><h3>Platform data architecture</h3><p>Custom data models, objects and relationships translated from nuanced business requirements into clean schemas.</p><ul><li>Data modelling</li><li>Data governance</li><li>Data migration</li><li>Mass data operations</li></ul></article>
+      <article class="card dom rv rv-d2"><span class="dom-n">03</span><h3>Security &amp; sharing</h3><p>Access design for globally distributed users, where compliance and usability pull in opposite directions.</p><ul><li>Role hierarchy</li><li>Sharing rules</li><li>Criteria-based sharing</li><li>Multi-country models</li></ul></article>
+      <article class="card dom rv"><span class="dom-n">04</span><h3>Platform engineering</h3><p>Still hands-on. Apex, asynchronous processing and Lightning components, written to survive the next release.</p><ul><li>Apex &amp; Batch Apex</li><li>LWC &amp; Aura</li><li>Trigger frameworks</li><li>SOQL optimisation</li></ul></article>
+      <article class="card dom rv rv-d1"><span class="dom-n">05</span><h3>Integration architecture</h3><p>REST and SOAP interfaces to external enterprise systems, replacing manual handoffs with near real-time exchange.</p><ul><li>REST &amp; SOAP APIs</li><li>Named Credentials</li><li>Platform Events</li><li>System-to-system</li></ul></article>
+      <article class="card dom rv rv-d2"><span class="dom-n">06</span><h3>DevOps &amp; release</h3><p>Version-control discipline and peer review as architecture concerns, not afterthoughts.</p><ul><li>Git &amp; Bitbucket</li><li>Blue Canvas</li><li>CI/CD</li><li>Salesforce DX</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CERT JOURNEY ===================== -->
+<section id="journey" class="sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">Certification journey</span>
+      <h2>Application Architect is a capstone,<br>not a single exam.</h2>
+      <p class="lede">Salesforce builds the Application Architect credential on four separate certifications. Select any credential to trace what it depends on.</p>
+    </div>
+
+    <div class="cj">
+      <div class="cj-stage rv">
+        <svg id="certsvg" viewBox="0 0 700 470" role="img" aria-label="Certification dependency graph">
+          <defs>
+            <linearGradient id="eg" x1="0" y1="1" x2="0" y2="0">
+              <stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#7C5CFF"/>
+            </linearGradient>
+          </defs>
+          <g id="cedges"></g>
+          <g id="cnodes"></g>
+        </svg>
+      </div>
+
+      <aside class="cj-side">
+        <div class="card rv rv-d2">
+          <h3 id="cj-title">Salesforce Certified Application Architect</h3>
+          <p id="cj-desc">A capstone credential awarded on top of four prerequisite certifications — two developer-track and two architect-track.</p>
+          <ul class="reqlist" id="cj-reqs"></ul>
+          <p class="small" style="margin:16px 0 0">All four prerequisites and the capstone are held. Credentials are verifiable through Salesforce.</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== GALAXY ===================== -->
+<section id="galaxy" class="sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">Technical skills</span>
+      <h2>The stack, mapped as it<br>actually connects.</h2>
+      <p class="lede">Hover a node to read it. Filter by layer to see how one part of the platform ties into the rest.</p>
+    </div>
+    <div class="galaxy rv">
+      <span class="gx-hint">Hover to inspect · drag to move</span>
+      <canvas id="net" aria-label="Interactive skills network"></canvas>
+      <div class="gx-tip" id="tip"></div>
+      <div class="gx-legend" id="legend"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== EXPERIENCE ===================== -->
+<section id="experience" class="sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">Professional experience</span>
+      <h2>What each role actually<br>put on the board.</h2>
+    </div>
+    <div id="jobs"></div>
+  </div>
+</section>
+
+<!-- ===================== AI ===================== -->
+<section id="ai" class="ai sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">AI &amp; Agentforce leadership</span>
+      <h2>Owning the AI question<br>before it was asked.</h2>
+    </div>
+    <div class="ai-hero">
+      <div class="rv">
+        <p class="lede">
+          Primary technical owner of the programme's generative AI engineering initiative at Accenture.
+          The remit was practical rather than exploratory: put Agentforce Vibes, Claude and GitHub Copilot
+          into the real delivery workflow — code generation, refactoring, test authoring, code review —
+          and measure what changed.
+        </p>
+        <p class="lede">
+          Alongside it, mentoring engineers on the platform's own AI surface: Agentforce, Einstein AI,
+          Data Cloud and Prompt Builder, so the capability sits with the team rather than one person.
+        </p>
+        <div class="toolrow">
+          <span class="tool"><i></i>Agentforce</span>
+          <span class="tool"><i></i>Agentforce Vibes</span>
+          <span class="tool"><i></i>Einstein AI</span>
+          <span class="tool"><i></i>Prompt Builder</span>
+          <span class="tool"><i></i>Claude</span>
+          <span class="tool"><i></i>GitHub Copilot</span>
+          <span class="tool"><i></i>Codex</span>
+          <span class="tool"><i></i>Microsoft 365 Copilot</span>
+        </div>
+      </div>
+
+      <div class="gauge rv rv-d2" id="gauge">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#22D3EE"/><stop offset=".55" stop-color="#2E7DFF"/><stop offset="1" stop-color="#7C5CFF"/>
+          </linearGradient></defs>
+          <circle class="gauge-c gauge-bg" cx="100" cy="100" r="84"/>
+          <circle class="gauge-c gauge-fg" id="gfg" cx="100" cy="100" r="84"/>
+        </svg>
+        <div class="gauge-txt">
+          <b><span data-count="60" data-suffix="%">0</span></b>
+          <small>approximate efficiency gain across development cycles</small>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CERT DASHBOARD ===================== -->
+<section id="certs" class="sec-rule">
+  <div class="wrap">
+    <div class="sec-head rv">
+      <span class="sec-idx">Certifications</span>
+      <h2>Twelve credentials, four tracks.</h2>
+    </div>
+    <div class="grid dash">
+      <div class="card dgroup rv"><header><h3>Architect</h3><b>3</b></header><ul>
+        <li>Application Architect</li><li>Platform Data Architect</li><li>Sharing and Visibility Designer</li></ul></div>
+      <div class="card dgroup rv rv-d1"><header><h3>Consultant &amp; Data</h3><b>3</b></header><ul>
+        <li>Data Cloud Consultant</li><li>Sales Cloud Consultant</li><li>Service Cloud Consultant</li></ul></div>
+      <div class="card dgroup rv rv-d2"><header><h3>Developer &amp; Platform</h3><b>5</b></header><ul>
+        <li>Platform Developer I</li><li>Platform App Builder</li><li>Administrator</li><li>AI Associate</li><li>Salesforce Associate</li></ul></div>
+      <div class="card dgroup rv rv-d3"><header><h3>DevOps</h3><b>1</b></header><ul>
+        <li>Copado Certified Administrator</li></ul>
+        <p class="dnote">Non-Salesforce. Eleven Salesforce credentials plus one DevOps credential.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CONTACT ===================== -->
+<section id="contact" class="contact">
+  <div class="wrap">
+    <div class="c-grid">
+      <div class="rv">
+        <span class="sec-idx">Contact</span>
+        <h2 style="margin:14px 0 18px">Happy to talk architecture,<br>delivery, or a specific problem.</h2>
+        <p class="lede" style="margin-bottom:0">
+          Open to Salesforce application architecture, technical architecture, solution architecture and
+          platform leadership conversations — permanent or programme-based.
+        </p>
+        <div class="ctas">
+          <a class="btn btn-solid" href="mailto:saptarshi24695@gmail.com?subject=Salesforce%20architecture%20role">Send an email</a>
+          <a class="btn" href="https://www.linkedin.com/in/saptarshidas2" target="_blank" rel="noopener">Open LinkedIn</a>
+        </div>
+      </div>
+      <div class="c-list rv rv-d2">
+        <a class="c-row" href="mailto:saptarshi24695@gmail.com"><span>EMAIL</span><b>saptarshi24695@gmail.com</b></a>
+        <a class="c-row" href="tel:+919775480035"><span>PHONE</span><b>+91 97754 80035</b></a>
+        <a class="c-row" href="https://www.linkedin.com/in/saptarshidas2" target="_blank" rel="noopener"><span>LINKEDIN</span><b>linkedin.com/in/saptarshidas2</b></a>
+        <div class="c-row"><span>LOCATION</span><b>Kolkata, India</b></div>
+        <div class="c-row"><span>EDUCATION</span><b>B.Tech, Instrumentation — WBUT, 2016 · CGPA 8.6/10</b></div>
+        <div class="c-row"><span>LANGUAGES</span><b>English · Hindi · Bengali</b></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <span>Saptarshi Das — Salesforce Application Architect &amp; Platform Data Architect</span>
+    <span>Kolkata, India</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+'use strict';
+var RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+var $  = function(s,r){return (r||document).querySelector(s)};
+var $$ = function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+
+/* ---------------- THEME ---------------- */
+var root = document.documentElement, tbtn = $('#theme'), ticon = $('#ticon');
+var SUN = 'M12 4V2M12 22v-2M4 12H2M22 12h-2M6 6L4.5 4.5M19.5 19.5L18 18M18 6l1.5-1.5M4.5 19.5L6 18M12 8a4 4 0 100 8 4 4 0 000-8z';
+var MOON = 'M21 12.8A9 9 0 1111.2 3a7 7 0 009.8 9.8z';
+tbtn.addEventListener('click', function(){
+  var light = root.getAttribute('data-theme') === 'light';
+  root.setAttribute('data-theme', light ? 'dark' : 'light');
+  ticon.setAttribute('d', light ? MOON : SUN);
+  tbtn.setAttribute('aria-label', light ? 'Switch to light theme' : 'Switch to dark theme');
+  paintNet(); paintTopo();
+});
+$('#printbtn').addEventListener('click', function(){ window.print(); });
+
+/* ---------------- NAV ---------------- */
+var nav = $('#nav');
+var secs = ['summary','timeline','expertise','journey','galaxy','experience','ai','contact'];
+function navScroll(){
+  nav.classList.toggle('stuck', window.scrollY > 24);
+  var y = window.scrollY + 140, cur = '';
+  secs.forEach(function(id){ var el = document.getElementById(id); if (el && el.offsetTop <= y) cur = id; });
+  $$('#navlinks a').forEach(function(a){
+    a.setAttribute('aria-current', a.getAttribute('href') === '#' + cur ? 'true' : 'false');
+  });
+}
+addEventListener('scroll', navScroll, {passive:true}); navScroll();
+
+/* ---------------- REVEAL ---------------- */
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+}, {threshold:.14, rootMargin:'0px 0px -8% 0px'});
+$$('.rv').forEach(function(el){ io.observe(el); });
+
+/* ---------------- COUNT-UP ---------------- */
+function countUp(el){
+  var to = parseFloat(el.getAttribute('data-count')), sfx = el.getAttribute('data-suffix') || '';
+  if (RM){ el.textContent = to + sfx; return; }
+  var t0 = null, dur = 1500;
+  function step(t){
+    if (!t0) t0 = t;
+    var p = Math.min((t - t0) / dur, 1), e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(to * e) + (p === 1 ? sfx : '');
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+var cio = new IntersectionObserver(function(es){
+  es.forEach(function(e){ if (e.isIntersecting){ countUp(e.target); cio.unobserve(e.target); } });
+}, {threshold:.5});
+$$('[data-count]').forEach(function(el){ cio.observe(el); });
+
+/* ---------------- GAUGE ---------------- */
+var gfg = $('#gfg'), C = 2 * Math.PI * 84;
+gfg.style.strokeDasharray = C; gfg.style.strokeDashoffset = C;
+new IntersectionObserver(function(es,o){
+  es.forEach(function(e){
+    if (e.isIntersecting){ gfg.style.strokeDashoffset = C * (1 - 0.60); o.unobserve(e.target); }
+  });
+}, {threshold:.4}).observe($('#gauge'));
+
+/* ---------------- TIMELINE PROGRESS + PARALLAX ---------------- */
+var tl = $('#tl'), tlfill = $('#tlfill'), items = $$('.tl-item');
+var hero = $('#top'), topoEl = $('#topo');
+function frame(){
+  if (tl){
+    var r = tl.getBoundingClientRect(), vh = innerHeight;
+    var p = (vh * 0.62 - r.top) / r.height;
+    tlfill.style.height = Math.max(0, Math.min(1, p)) * r.height + 'px';
+    items.forEach(function(it){
+      var ir = it.getBoundingClientRect();
+      it.classList.toggle('lit', ir.top < vh * 0.66);
+    });
+  }
+  if (!RM && topoEl){
+    var hy = hero.getBoundingClientRect().top;
+    topoEl.style.transform = 'translate3d(0,' + (-hy * 0.16) + 'px,0)';
+  }
+  raf = null;
+}
+var raf = null;
+addEventListener('scroll', function(){ if (!raf) raf = requestAnimationFrame(frame); }, {passive:true});
+addEventListener('resize', function(){ if (!raf) raf = requestAnimationFrame(frame); });
+frame();
+
+/* ============================================================
+   HERO TOPOLOGY CANVAS
+   ============================================================ */
+var tc = $('#topo'), tx = tc.getContext('2d'), tn = [], tw = 0, th = 0, tdpr = 1;
+function topoInit(){
+  tdpr = Math.min(devicePixelRatio || 1, 2);
+  tw = tc.clientWidth; th = tc.clientHeight;
+  tc.width = tw * tdpr; tc.height = th * tdpr; tx.setTransform(tdpr,0,0,tdpr,0,0);
+  var count = tw < 700 ? 26 : 52;
+  tn = [];
+  for (var i = 0; i < count; i++){
+    tn.push({
+      x: Math.random()*tw, y: Math.random()*th,
+      vx:(Math.random()-.5)*.16, vy:(Math.random()-.5)*.16,
+      r: Math.random()*1.5 + .9
+    });
+  }
+}
+function paintTopo(){
+  if (!tw) return;
+  var light = root.getAttribute('data-theme') === 'light';
+  tx.clearRect(0,0,tw,th);
+  var maxd = tw < 700 ? 130 : 168;
+  for (var i = 0; i < tn.length; i++){
+    for (var j = i+1; j < tn.length; j++){
+      var dx = tn[i].x-tn[j].x, dy = tn[i].y-tn[j].y, d = Math.sqrt(dx*dx+dy*dy);
+      if (d < maxd){
+        var a = (1 - d/maxd) * (light ? .16 : .22);
+        tx.strokeStyle = light ? 'rgba(20,50,110,'+a+')' : 'rgba(120,180,255,'+a+')';
+        tx.lineWidth = .8;
+        tx.beginPath(); tx.moveTo(tn[i].x,tn[i].y); tx.lineTo(tn[j].x,tn[j].y); tx.stroke();
+      }
+    }
+  }
+  for (var k = 0; k < tn.length; k++){
+    var p = tn[k];
+    tx.fillStyle = light ? 'rgba(20,50,110,.34)' : 'rgba(160,205,255,.5)';
+    tx.beginPath(); tx.arc(p.x,p.y,p.r,0,6.2832); tx.fill();
+  }
+}
+function topoTick(){
+  for (var i = 0; i < tn.length; i++){
+    var p = tn[i];
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < -20) p.x = tw+20; if (p.x > tw+20) p.x = -20;
+    if (p.y < -20) p.y = th+20; if (p.y > th+20) p.y = -20;
+  }
+  paintTopo();
+  requestAnimationFrame(topoTick);
+}
+topoInit(); paintTopo();
+if (!RM) requestAnimationFrame(topoTick);
+addEventListener('resize', function(){ topoInit(); paintTopo(); });
+
+/* ============================================================
+   CERTIFICATION DEPENDENCY GRAPH
+   ============================================================ */
+var CERTS = [
+  {id:'assoc', label:'Salesforce Associate',        tier:'Foundation',  x: 88, y:412, req:[], desc:'Entry credential covering the platform\u2019s core concepts and navigation.'},
+  {id:'admin', label:'Administrator',               tier:'Foundation',  x:262, y:412, req:[], desc:'Declarative configuration, security and data management on the platform.'},
+  {id:'aia',   label:'AI Associate',                tier:'Foundation',  x:436, y:412, req:[], desc:'Foundational credential on Salesforce AI, data quality and responsible use.'},
+  {id:'copado',label:'Copado Administrator',        tier:'DevOps',      x:610, y:412, req:[], desc:'Non-Salesforce DevOps credential covering release management and pipelines.'},
+
+  {id:'pab',   label:'Platform App Builder',        tier:'Platform',    x:150, y:300, req:['admin'], desc:'Declarative application design — data model, business logic, UI and reporting.'},
+  {id:'pd1',   label:'Platform Developer I',        tier:'Platform',    x:350, y:300, req:['admin'], desc:'Programmatic development: Apex, SOQL, Lightning components and testing.'},
+  {id:'dcc',   label:'Data Cloud Consultant',       tier:'Functional',  x:568, y:300, req:[], desc:'Data Cloud implementation — ingestion, harmonisation, identity resolution.'},
+
+  {id:'pda',   label:'Platform Data Architect',     tier:'Architect',   x:150, y:188, req:['pab','pd1'], desc:'Enterprise data modelling, governance, large data volumes and migration strategy.'},
+  {id:'svd',   label:'Sharing & Visibility Designer',tier:'Architect',  x:350, y:188, req:['admin','pd1'], desc:'Record access architecture — OWD, role hierarchy, sharing rules, performance.'},
+  {id:'scc',   label:'Sales Cloud Consultant',      tier:'Functional',  x:530, y:188, req:['admin'], desc:'Sales Cloud solution design against real business process.'},
+  {id:'svcc',  label:'Service Cloud Consultant',    tier:'Functional',  x:640, y:130, req:['admin'], desc:'Service Cloud solution design — case management, channels, knowledge.'},
+
+  {id:'aa',    label:'Application Architect',       tier:'Capstone',    x:250, y: 62, req:['pab','pd1','pda','svd'], desc:'Capstone credential awarded on four prerequisites — two developer-track, two architect-track. Certifies design authority over the full application layer.'}
+];
+var W = {aa:190, pda:170, svd:200, pab:170, pd1:170, dcc:170, scc:170, svcc:170, assoc:160, admin:150, aia:140, copado:180};
+var byId = {}; CERTS.forEach(function(c){ byId[c.id] = c; });
+
+var svgN = $('#cnodes'), svgE = $('#cedges'), NS = 'http://www.w3.org/2000/svg';
+function mk(t,a){ var e = document.createElementNS(NS,t); for (var k in a) e.setAttribute(k,a[k]); return e; }
+var edgeEls = [];
+
+CERTS.forEach(function(c){
+  c.w = W[c.id] || 160; c.h = 46;
+  c.req.forEach(function(r){
+    var p = byId[r];
+    var x1 = p.x, y1 = p.y - 4, x2 = c.x, y2 = c.y + c.h + 4;
+    var d = 'M'+x1+' '+y1+' C '+x1+' '+((y1+y2)/2)+' '+x2+' '+((y1+y2)/2)+' '+x2+' '+y2;
+    var el = mk('path',{d:d,'class':'cedge'});
+    el.dataset.from = r; el.dataset.to = c.id;
+    svgE.appendChild(el); edgeEls.push(el);
+  });
+});
+
+CERTS.forEach(function(c){
+  var g = mk('g',{'class':'cnode',tabindex:'0',role:'button','aria-label':c.label});
+  g.dataset.id = c.id;
+  g.appendChild(mk('rect',{x:c.x-c.w/2,y:c.y,width:c.w,height:c.h,rx:11}));
+  var t1 = mk('text',{x:c.x,y:c.y+19,'class':'tier','text-anchor':'middle'}); t1.textContent = c.tier.toUpperCase();
+  var t2 = mk('text',{x:c.x,y:c.y+34,'text-anchor':'middle'});
+  var lbl = c.label.length > 26 ? c.label.replace(' Designer','') : c.label;
+  t2.textContent = lbl;
+  g.appendChild(t1); g.appendChild(t2);
+  g.addEventListener('click', function(){ select(c.id); });
+  g.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); select(c.id); } });
+  svgN.appendChild(g);
+});
+
+function chain(id, set){
+  set = set || {}; set[id] = true;
+  byId[id].req.forEach(function(r){ if (!set[r]) chain(r, set); });
+  return set;
+}
+function select(id){
+  var c = byId[id], lit = chain(id);
+  $$('.cnode').forEach(function(g){
+    var on = !!lit[g.dataset.id];
+    g.classList.toggle('on', on);
+    g.classList.toggle('dim', !on);
+  });
+  edgeEls.forEach(function(e){
+    var on = lit[e.dataset.from] && lit[e.dataset.to];
+    e.classList.toggle('on', !!on);
+    e.classList.toggle('dim', !on);
+  });
+  $('#cj-title').textContent = 'Salesforce Certified ' + c.label;
+  $('#cj-desc').textContent = c.desc;
+  var ul = $('#cj-reqs'); ul.innerHTML = '';
+  var reqs = c.req.slice();
+  if (!reqs.length){
+    var li = document.createElement('li');
+    li.innerHTML = '<s></s>No prerequisite certifications required.';
+    ul.appendChild(li);
+  } else {
+    reqs.forEach(function(r){
+      var li = document.createElement('li');
+      li.innerHTML = '<s></s>' + byId[r].label;
+      ul.appendChild(li);
+    });
+  }
+}
+select('aa');
+
+/* ============================================================
+   SKILLS GALAXY (force network)
+   ============================================================ */
+var CL = [
+  {k:'arch', name:'Architecture',        c:'#7C5CFF'},
+  {k:'eng',  name:'Platform engineering',c:'#2E7DFF'},
+  {k:'sec',  name:'Security & sharing',  c:'#22D3EE'},
+  {k:'int',  name:'Integration & DevOps',c:'#4ADE80'},
+  {k:'cloud',name:'Clouds',              c:'#FF7A4D'},
+  {k:'ai',   name:'AI & productivity',   c:'#F472B6'}
+];
+var SK = [
+  ['Application architecture','arch',1],['Solution design','arch',1],['Data modelling','arch',1],
+  ['Data governance','arch',0],['Data migration','arch',0],['Design reviews','arch',0],['Technical design docs','arch',0],
+  ['Apex','eng',1],['Batch & Async Apex','eng',0],['Lightning Web Components','eng',1],['Aura','eng',0],
+  ['Visualforce','eng',0],['SOQL / SOSL','eng',0],['Trigger frameworks','eng',0],['Platform Events','eng',0],
+  ['Flow automation','eng',0],['Bulkification','eng',0],['Governor limits','eng',0],
+  ['Role hierarchy','sec',0],['Sharing rules','sec',1],['Permission sets','sec',0],
+  ['Org-wide defaults','sec',0],['Multi-country access','sec',0],
+  ['REST APIs','int',1],['SOAP APIs','int',0],['Named Credentials','int',0],['Git & Bitbucket','int',0],
+  ['Blue Canvas','int',0],['CI/CD','int',0],['Salesforce DX','int',0],['Data Loader','int',0],['Workbench','int',0],
+  ['Sales Cloud','cloud',1],['Service Cloud','cloud',1],['Experience Cloud','cloud',0],
+  ['Consumer Goods Cloud','cloud',1],['Health Cloud','cloud',0],['Data Cloud','cloud',1],
+  ['Agentforce','ai',1],['Agentforce Vibes','ai',0],['Einstein AI','ai',0],['Prompt Builder','ai',0],
+  ['Claude','ai',1],['GitHub Copilot','ai',1],['Codex','ai',0],['M365 Copilot','ai',0]
+];
+
+var nc = $('#net'), nx = nc.getContext('2d'), tip = $('#tip');
+var NW = 0, NH = 0, NDPR = 1, nodes = [], links = [], hubs = {}, active = {}, hover = null, drag = null;
+CL.forEach(function(c){ active[c.k] = true; });
+
+/* legend */
+var leg = $('#legend');
+CL.forEach(function(c){
+  var b = document.createElement('button');
+  b.className = 'lg'; b.type = 'button'; b.setAttribute('aria-pressed','true');
+  b.innerHTML = '<i style="background:' + c.c + '"></i>' + c.name;
+  b.addEventListener('click', function(){
+    active[c.k] = !active[c.k];
+    b.setAttribute('aria-pressed', String(active[c.k]));
+  });
+  leg.appendChild(b);
+});
+
+function colOf(k){ for (var i=0;i<CL.length;i++) if (CL[i].k===k) return CL[i].c; return '#888'; }
+
+function netInit(){
+  NDPR = Math.min(devicePixelRatio || 1, 2);
+  NW = nc.clientWidth; NH = nc.clientHeight;
+  nc.width = NW * NDPR; nc.height = NH * NDPR; nx.setTransform(NDPR,0,0,NDPR,0,0);
+  nodes = []; links = []; hubs = {};
+  var cx = NW/2, cy = NH/2, R = Math.min(NW,NH) * 0.31;
+  CL.forEach(function(c,i){
+    var a = (i / CL.length) * Math.PI * 2 - Math.PI/2;
+    var h = {id:'hub-'+c.k, label:c.name, k:c.k, hub:true, r:8,
+             x:cx + Math.cos(a)*R, y:cy + Math.sin(a)*R,
+             hx:cx + Math.cos(a)*R, hy:cy + Math.sin(a)*R, vx:0, vy:0};
+    hubs[c.k] = h; nodes.push(h);
+  });
+  SK.forEach(function(s){
+    var h = hubs[s[1]], a = Math.random()*Math.PI*2, d = 26 + Math.random()*48;
+    nodes.push({id:s[0], label:s[0], k:s[1], hub:false, key:!!s[2],
+                r: s[2] ? 5.4 : 3.7,
+                x:h.hx + Math.cos(a)*d, y:h.hy + Math.sin(a)*d, vx:0, vy:0});
+    links.push([s[0], 'hub-'+s[1]]);
+  });
+  for (var i=0;i<CL.length;i++){
+    var a1 = CL[i].k, a2 = CL[(i+1)%CL.length].k;
+    links.push(['hub-'+a1,'hub-'+a2]);
+  }
+  var idx = {}; nodes.forEach(function(n){ idx[n.id] = n; });
+  links = links.map(function(l){ return [idx[l[0]], idx[l[1]]]; }).filter(function(l){ return l[0] && l[1]; });
+}
+
+function tick(){
+  for (var i=0;i<nodes.length;i++){
+    var n = nodes[i];
+    if (n.hub){ n.vx += (n.hx - n.x) * .02; n.vy += (n.hy - n.y) * .02; }
+  }
+  for (var a=0;a<nodes.length;a++){
+    for (var b=a+1;b<nodes.length;b++){
+      var p = nodes[a], q = nodes[b];
+      var dx = q.x-p.x, dy = q.y-p.y, d2 = dx*dx+dy*dy;
+      if (d2 < 1) d2 = 1;
+      if (d2 < 5200){
+        var f = 240 / d2, d = Math.sqrt(d2);
+        var ux = dx/d*f, uy = dy/d*f;
+        p.vx -= ux; p.vy -= uy; q.vx += ux; q.vy += uy;
+      }
+    }
+  }
+  for (var L=0;L<links.length;L++){
+    var s = links[L][0], t = links[L][1];
+    var ddx = t.x-s.x, ddy = t.y-s.y, dd = Math.sqrt(ddx*ddx+ddy*ddy) || 1;
+    var rest = (s.hub && t.hub) ? Math.min(NW,NH)*0.32 : 52;
+    var k = (dd - rest) * .008;
+    var kx = ddx/dd*k, ky = ddy/dd*k;
+    s.vx += kx; s.vy += ky; t.vx -= kx; t.vy -= ky;
+  }
+  for (var m=0;m<nodes.length;m++){
+    var o = nodes[m];
+    if (drag === o) continue;
+    o.vx *= .86; o.vy *= .86;
+    o.x += o.vx; o.y += o.vy;
+    var pad = 16;
+    o.x = Math.max(pad, Math.min(NW-pad, o.x));
+    o.y = Math.max(pad, Math.min(NH-pad, o.y));
+  }
+}
+
+function paintNet(){
+  if (!NW) return;
+  var light = root.getAttribute('data-theme') === 'light';
+  nx.clearRect(0,0,NW,NH);
+  for (var L=0;L<links.length;L++){
+    var s = links[L][0], t = links[L][1];
+    var on = active[s.k] && active[t.k];
+    nx.strokeStyle = light
+      ? 'rgba(10,20,40,' + (on ? .16 : .04) + ')'
+      : 'rgba(150,190,255,' + (on ? .20 : .05) + ')';
+    nx.lineWidth = (s.hub && t.hub) ? 1.3 : .85;
+    nx.beginPath(); nx.moveTo(s.x,s.y); nx.lineTo(t.x,t.y); nx.stroke();
+  }
+  for (var i=0;i<nodes.length;i++){
+    var n = nodes[i], on = active[n.k], c = colOf(n.k);
+    nx.globalAlpha = on ? 1 : .16;
+    if (n.hub){
+      nx.beginPath(); nx.arc(n.x,n.y,n.r+6,0,6.2832);
+      nx.fillStyle = c + '26'; nx.fill();
+      nx.beginPath(); nx.arc(n.x,n.y,n.r,0,6.2832);
+      nx.fillStyle = c; nx.fill();
+      nx.font = '600 11.5px ' + getComputedStyle(document.body).fontFamily;
+      nx.fillStyle = light ? 'rgba(10,20,40,.82)' : 'rgba(235,242,252,.9)';
+      nx.textAlign = 'center';
+      nx.fillText(n.label, n.x, n.y - n.r - 11);
+    } else {
+      if (hover === n){
+        nx.beginPath(); nx.arc(n.x,n.y,n.r+5,0,6.2832);
+        nx.fillStyle = c + '33'; nx.fill();
+      }
+      nx.beginPath(); nx.arc(n.x,n.y,n.r,0,6.2832);
+      nx.fillStyle = n.key ? c : (light ? c + 'AA' : c + '99'); nx.fill();
+      if (n.key){
+        nx.lineWidth = 1; nx.strokeStyle = light ? 'rgba(255,255,255,.85)' : 'rgba(6,11,26,.7)'; nx.stroke();
+      }
+    }
+    nx.globalAlpha = 1;
+  }
+}
+
+function loop(){ tick(); paintNet(); requestAnimationFrame(loop); }
+
+function pick(mx,my){
+  var best = null, bd = 18*18;
+  for (var i=0;i<nodes.length;i++){
+    var n = nodes[i];
+    if (!active[n.k]) continue;
+    var dx = n.x-mx, dy = n.y-my, d = dx*dx+dy*dy;
+    if (d < bd){ bd = d; best = n; }
+  }
+  return best;
+}
+function evPos(e){
+  var r = nc.getBoundingClientRect();
+  var t = e.touches ? e.touches[0] : e;
+  return {x:t.clientX - r.left, y:t.clientY - r.top};
+}
+nc.addEventListener('pointermove', function(e){
+  var p = evPos(e);
+  if (drag){ drag.x = p.x; drag.y = p.y; drag.vx = drag.vy = 0; if (drag.hub){ drag.hx = p.x; drag.hy = p.y; } }
+  hover = pick(p.x,p.y);
+  if (hover){
+    tip.textContent = hover.label;
+    tip.style.left = hover.x + 'px'; tip.style.top = hover.y + 'px'; tip.style.opacity = 1;
+    nc.style.cursor = 'grab';
+  } else { tip.style.opacity = 0; nc.style.cursor = 'crosshair'; }
+});
+nc.addEventListener('pointerdown', function(e){
+  var p = evPos(e); drag = pick(p.x,p.y);
+  if (drag){ nc.setPointerCapture(e.pointerId); nc.style.cursor = 'grabbing'; }
+});
+nc.addEventListener('pointerup', function(){ drag = null; nc.style.cursor = 'crosshair'; });
+nc.addEventListener('pointerleave', function(){ hover = null; drag = null; tip.style.opacity = 0; });
+
+netInit();
+for (var w=0;w<260;w++) tick();
+paintNet();
+if (!RM) requestAnimationFrame(loop);
+addEventListener('resize', function(){ netInit(); for (var w=0;w<200;w++) tick(); paintNet(); });
+
+/* ============================================================
+   EXPERIENCE ACCORDION
+   ============================================================ */
+var JOBS = [
+  {role:'Associate Manager — Salesforce Technical Lead', org:'Accenture', when:'Sep 2024 — Present', open:true, pts:[
+    'Own end-to-end Salesforce technical delivery for global enterprise clients — architecture, solution design and offshore execution across multi-cloud and custom-built implementations.',
+    'Spearhead the programme\u2019s generative AI engineering initiative as primary technical owner, embedding Agentforce Vibes, Claude and GitHub Copilot into code generation, refactoring, test authoring and review — driving approximately 60% efficiency gains.',
+    'Translate complex enterprise requirements into scalable, reusable, governor-limit-aware designs, partnering with onshore architects and stakeholders through solution definition and design review.',
+    'Direct an offshore pod of developers and QA engineers across multiple parallel sprints, enforcing engineering standards for bulkification, trigger frameworks, asynchronous processing and security and sharing models.',
+    'Steward critical business use cases from requirement gathering through deployment and hypercare, resolving Severity-1 production escalations within defined SLAs.',
+    'Mentor and upskill 10+ engineers on Agentforce, Einstein AI, Data Cloud and Prompt Builder, and present architecture and roadmap decisions to client leadership to secure approvals.'
+  ]},
+  {role:'Senior Consultant — Salesforce Developer', org:'Deloitte Digital', when:'Jul 2022 — Aug 2024', pts:[
+    'Architected complex custom data models, objects and relationships, converting nuanced business requirements into clean, scalable Salesforce schemas.',
+    'Engineered REST API integrations between Salesforce and external enterprise systems, enabling near real-time data exchange and eliminating manual handoffs across business teams.',
+    'Built Apex classes, triggers, Batch Apex jobs, Visualforce pages and Lightning Web Components powering core workflows and customer-facing experiences.',
+    'Modernised legacy Apex through bulkification, SOQL optimisation and trigger-handler design patterns, improving execution efficiency and eliminating governor-limit failures.',
+    'Diagnosed and remediated high-impact production defects across Apex, triggers and integrations, then instituted version-control discipline, peer code review and deployment standards to reduce release risk.'
+  ]},
+  {role:'Salesforce Developer', org:'Accenture Services Pvt Ltd', when:'May 2021 — Jul 2022', pts:[
+    'Established a robust security and sharing model using profiles, permission sets, role hierarchy and sharing rules to enforce controlled, audit-ready data access.',
+    'Configured tailored platform solutions including custom objects, fields, validation rules, formula fields and record types to meet evolving business requirements.',
+    'Engineered Apex classes, triggers, Visualforce pages and LWC and Aura components to automate business processes and deliver intuitive user experiences.',
+    'Authored reports and dashboards giving sales leadership real-time visibility into pipeline health and revenue performance, and accelerated adoption via UAT support, training documentation and hypercare.'
+  ]},
+  {role:'Salesforce Developer', org:'Cognizant Technology Solutions India Ltd', when:'Jan 2019 — May 2021', pts:[
+    'Designed, maintained and optimised a large-scale, multi-country Salesforce security model — roles, profiles, sharing rules, and criteria-based and ownership-based sharing — sustaining frictionless yet compliant access for a globally distributed user base.',
+    'Executed data migration and mass data operations via Data Loader and Workbench with zero data loss during cutover.',
+    'Configured custom objects, fields, formulas, page layouts, record types, validation rules and workflows to global rollout standards, and resolved complex defects across configuration, automation and integration layers.'
+  ]},
+  {role:'Java Developer', org:'Cognizant Technology Solutions India Ltd', when:'Aug 2016 — Dec 2018', pts:[
+    'Engineered Java-based web services for a secure banking transaction system supporting mission-critical financial operations.',
+    'Authored unit and integration test suites using Mockito, sustaining functional reliability and high code coverage.'
+  ]}
+];
+
+var jw = $('#jobs');
+JOBS.forEach(function(j,i){
+  var art = document.createElement('article'); art.className = 'job rv';
+  var bid = 'jb'+i, pid = 'jp'+i;
+  art.innerHTML =
+    '<button class="job-btn" id="'+bid+'" aria-expanded="'+(j.open?'true':'false')+'" aria-controls="'+pid+'">'+
+      '<span><span class="job-role">'+j.role+'</span>'+
+      '<span class="job-sub"><b>'+j.org+'</b><span>'+j.when+'</span></span></span>'+
+      '<span class="job-tog" aria-hidden="true"></span>'+
+    '</button>'+
+    '<div class="job-body" id="'+pid+'" role="region" aria-labelledby="'+bid+'"><div class="job-inner"><ul>'+
+      j.pts.map(function(p){ return '<li>'+p+'</li>'; }).join('')+
+    '</ul></div></div>';
+  jw.appendChild(art);
+  io.observe(art);
+
+  var btn = art.querySelector('.job-btn'), body = art.querySelector('.job-body');
+  function setH(){ body.style.height = body.firstElementChild.offsetHeight + 'px'; }
+  if (j.open) setH();
+  btn.addEventListener('click', function(){
+    var open = btn.getAttribute('aria-expanded') === 'true';
+    btn.setAttribute('aria-expanded', String(!open));
+    if (open) body.style.height = '0px'; else setH();
+  });
+  addEventListener('resize', function(){
+    if (btn.getAttribute('aria-expanded') === 'true') setH();
+  });
+});
+
+/* expand all before printing so nothing is hidden on paper */
+function expandAll(){ $$('.job-btn').forEach(function(b){
+  if (b.getAttribute('aria-expanded') === 'false') b.click();
+}); }
+addEventListener('beforeprint', expandAll);
+if (window.matchMedia){
+  var mq = window.matchMedia('print');
+  if (mq.addEventListener) mq.addEventListener('change', function(e){ if (e.matches) expandAll(); });
+}
+
+/* ---------------- card cursor glow ---------------- */
+$$('.card').forEach(function(c){
+  c.addEventListener('pointermove', function(e){
+    var r = c.getBoundingClientRect();
+    c.style.setProperty('--mx', (e.clientX - r.left) + 'px');
+    c.style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+});
+})();
+</script>
+</body>
+</html>
