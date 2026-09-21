@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Saptarshi Das — Salesforce Application Architect &amp; Platform Data Architect</title>
-<meta name="description" content="Saptarshi Das — Salesforce Certified Application Architect and Platform Data Architect. 10+ years in IT, 8+ years on the Salesforce platform. Kolkata, India.">
+<meta name="description" content="Saptarshi Das — Salesforce Certified Application Architect, Platform Data Architect and Platform Integration Architect. 10+ years in IT, 8+ years on the Salesforce platform. Kolkata, India.">
 <style>
 /* ============================================================
    TOKENS
@@ -13,7 +13,7 @@
   --ink-900:#060B1A; --ink-850:#080F22; --ink-800:#0B1428; --ink-700:#111C36;
   --ink-600:#1A2745; --line:#22314F;
   --paper:#F7F9FC; --paper-2:#EEF2F8;
-  --azure:#2E7DFF; --aqua:#22D3EE; --violet:#7C5CFF; --ember:#FF7A4D;
+  --azure:#2E7DFF; --aqua:#22D3EE; --violet:#7C5CFF; --ember:#FF7A4D; --mint:#4ADE80;
   --serif:Georgia,'Iowan Old Style','Palatino Linotype','Book Antiqua',Palatino,'Times New Roman',serif;
   --sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
   --wrap:1120px; --gut:clamp(20px,5vw,48px);
@@ -274,7 +274,9 @@ section{position:relative;padding:clamp(72px,10vw,132px) 0}
 .cnode .tier{fill:var(--fg-3);font-size:9.4px;letter-spacing:.07em}
 .cnode:hover rect,.cnode.on rect{stroke:var(--aqua);fill:color-mix(in srgb,var(--aqua) 12%,var(--bg-2))}
 .cnode.on text{fill:var(--fg)}
-.cnode.dim{opacity:.32}
+/* dimmed nodes keep an opaque fill so edges never read as slicing through a label */
+.cnode.dim rect{stroke-opacity:.3}
+.cnode.dim text{opacity:.4}
 .cedge{stroke:var(--stroke-2);stroke-width:1.3;fill:none;transition:stroke .35s,stroke-width .35s,opacity .35s}
 .cedge.on{stroke:url(#eg);stroke-width:2.4}
 .cedge.dim{opacity:.16}
@@ -399,16 +401,51 @@ section{position:relative;padding:clamp(72px,10vw,132px) 0}
 .dash{grid-template-columns:repeat(4,1fr)}
 @media(max-width:1000px){.dash{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:560px){.dash{grid-template-columns:1fr}}
-.dgroup{display:flex;flex-direction:column;gap:14px}
+.dgroup{display:flex;flex-direction:column;gap:14px;--accent:var(--aqua)}
+.dgroup[data-tier="architect"]{--accent:var(--violet)}
+.dgroup[data-tier="consultant"]{--accent:var(--azure)}
+.dgroup[data-tier="developer"]{--accent:var(--aqua)}
+.dgroup[data-tier="devops"]{--accent:var(--mint)}
 .dgroup header{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
-.dgroup h3{font-size:1.08rem}
-.dgroup header b{font-family:var(--serif);font-size:1.6rem;color:var(--fg-3);font-variant-numeric:tabular-nums}
+.dgroup h3{font-size:1.08rem;position:relative;padding-left:14px}
+.dgroup h3::before{
+  content:"";position:absolute;left:0;top:.44em;width:7px;height:7px;border-radius:50%;
+  background:var(--accent);box-shadow:0 0 0 0 var(--accent);
+  transition:box-shadow .45s var(--ease);
+}
+.dgroup:hover h3::before{box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+.dgroup header b{
+  font-family:var(--serif);font-size:1.6rem;color:var(--fg-3);
+  font-variant-numeric:tabular-nums;transition:color .45s var(--ease);
+}
+.dgroup:hover header b{color:var(--accent)}
 .dgroup ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
 .dgroup li{
   font-size:.86rem;color:var(--fg-2);padding:10px 12px;border-radius:var(--r-sm);
-  background:var(--surface-2);border-left:2px solid var(--stroke-2);transition:border-color .35s,color .35s;
+  background:var(--surface-2);border-left:2px solid var(--stroke-2);
+  position:relative;overflow:hidden;
+  transition:border-left-color .35s,color .35s,background .35s,transform .4s var(--ease),box-shadow .4s var(--ease);
 }
-.dgroup li:hover{border-left-color:var(--aqua);color:var(--fg)}
+.dgroup li::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:0;
+  background:linear-gradient(100deg,transparent,color-mix(in srgb,var(--accent) 16%,transparent),transparent);
+  transform:translateX(-100%);transition:opacity .3s;
+}
+.dgroup li:hover{
+  border-left-color:var(--accent);color:var(--fg);background:var(--surface);
+  transform:translateX(5px);
+  box-shadow:-3px 0 18px -6px color-mix(in srgb,var(--accent) 60%,transparent);
+}
+.dgroup li:hover::before{opacity:1;animation:sheen .85s var(--ease)}
+@keyframes sheen{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
+/* staggered entrance once the card reveals */
+.dgroup.in li{animation:certIn .55s var(--ease) both}
+.dgroup.in li:nth-child(1){animation-delay:.10s}
+.dgroup.in li:nth-child(2){animation-delay:.18s}
+.dgroup.in li:nth-child(3){animation-delay:.26s}
+.dgroup.in li:nth-child(4){animation-delay:.34s}
+.dgroup.in li:nth-child(5){animation-delay:.42s}
+@keyframes certIn{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
 .dnote{margin-top:18px;font-size:.85rem;color:var(--fg-3)}
 
 /* ============================================================
@@ -469,6 +506,7 @@ footer{padding:26px 0 40px;border-top:1px solid var(--stroke)}
   #net{display:none!important}
   .galaxy{padding:0;border:0}
   .rv{opacity:1!important;transform:none!important}
+  .dgroup.in li{animation:none!important}
   a{color:#111!important}
   .tl-org,.dot,.tag{color:#0B3FA8!important}
 }
@@ -512,11 +550,11 @@ footer{padding:26px 0 40px;border-top:1px solid var(--stroke)}
     <div class="hero-roles">
       <span>Salesforce Application Architect</span>
       <span>Platform Data Architect</span>
-      <span>Technical Lead</span>
+      <span>Platform Integration Architect</span>
     </div>
     <p class="lede" style="margin-top:26px">
       Ten years building on enterprise platforms, eight of them on Salesforce — from Java web services
-      to owning application and data architecture for global programmes at Accenture.
+      to owning application, data and integration architecture for global programmes at Accenture.
     </p>
     <div class="hero-foot">
       <a class="btn btn-solid" href="#journey">See the credential path</a>
@@ -548,10 +586,11 @@ footer{padding:26px 0 40px;border-top:1px solid var(--stroke)}
     <div class="sum">
       <div>
         <p class="lede">
-          Salesforce Certified Application Architect and Platform Data Architect, currently operating at
-          Associate Manager and Technical Lead level at Accenture. The work spans both halves of the role:
-          owning application architecture, enterprise data modelling and security and sharing design, while
-          still writing and reviewing the Apex, Lightning Web Components and integration code that carries it.
+          Salesforce Certified Application Architect, Platform Data Architect and Platform Integration
+          Architect, currently operating at Associate Manager and Technical Lead level at Accenture. The work
+          spans both halves of the role: owning application architecture, enterprise data modelling and
+          security and sharing design, while still writing and reviewing the Apex, Lightning Web Components
+          and integration code that carries it.
         </p>
         <p class="lede">
           Delivery has covered Sales, Service, Experience, Consumer Goods, Health and Data Cloud for global
@@ -651,12 +690,12 @@ footer{padding:26px 0 40px;border-top:1px solid var(--stroke)}
     <div class="sec-head rv">
       <span class="sec-idx">Certification journey</span>
       <h2>Application Architect is a capstone,<br>not a single exam.</h2>
-      <p class="lede">Salesforce builds the Application Architect credential on four separate certifications. Select any credential to trace what it depends on.</p>
+      <p class="lede">Salesforce builds the Application Architect credential on four separate certifications. Platform Integration Architect opens the parallel System Architect track. Select any credential to trace what it depends on.</p>
     </div>
 
     <div class="cj">
       <div class="cj-stage rv">
-        <svg id="certsvg" viewBox="0 0 700 470" role="img" aria-label="Certification dependency graph">
+        <svg id="certsvg" viewBox="0 0 700 540" role="img" aria-label="Certification dependency graph">
           <defs>
             <linearGradient id="eg" x1="0" y1="1" x2="0" y2="0">
               <stop offset="0" stop-color="#22D3EE"/><stop offset="1" stop-color="#7C5CFF"/>
@@ -763,15 +802,39 @@ footer{padding:26px 0 40px;border-top:1px solid var(--stroke)}
       <h2>Twelve credentials, four tracks.</h2>
     </div>
     <div class="grid dash">
-      <div class="card dgroup rv"><header><h3>Architect</h3><b>3</b></header><ul>
-        <li>Application Architect</li><li>Platform Data Architect</li><li>Sharing and Visibility Designer</li></ul></div>
-      <div class="card dgroup rv rv-d1"><header><h3>Consultant &amp; Data</h3><b>3</b></header><ul>
-        <li>Data Cloud Consultant</li><li>Sales Cloud Consultant</li><li>Service Cloud Consultant</li></ul></div>
-      <div class="card dgroup rv rv-d2"><header><h3>Developer &amp; Platform</h3><b>5</b></header><ul>
-        <li>Platform Developer I</li><li>Platform App Builder</li><li>Administrator</li><li>AI Associate</li><li>Salesforce Associate</li></ul></div>
-      <div class="card dgroup rv rv-d3"><header><h3>DevOps</h3><b>1</b></header><ul>
-        <li>Copado Certified Administrator</li></ul>
-        <p class="dnote">Non-Salesforce. Eleven Salesforce credentials plus one DevOps credential.</p></div>
+      <div class="card dgroup rv" data-tier="architect">
+        <header><h3>Architect</h3><b data-count="4">0</b></header>
+        <ul>
+          <li>Application Architect</li>
+          <li>Platform Data Architect</li>
+          <li>Platform Integration Architect</li>
+          <li>Platform Sharing &amp; Visibility Architect</li>
+        </ul>
+      </div>
+      <div class="card dgroup rv rv-d1" data-tier="consultant">
+        <header><h3>Consultant</h3><b data-count="3">0</b></header>
+        <ul>
+          <li>Data 360 Consultant</li>
+          <li>Agentforce Sales Consultant</li>
+          <li>Agentforce Service Consultant</li>
+        </ul>
+      </div>
+      <div class="card dgroup rv rv-d2" data-tier="developer">
+        <header><h3>Developer &amp; Platform</h3><b data-count="4">0</b></header>
+        <ul>
+          <li>Platform Developer I</li>
+          <li>Platform App Builder</li>
+          <li>Platform Administrator</li>
+          <li>Platform Foundations</li>
+        </ul>
+      </div>
+      <div class="card dgroup rv rv-d3" data-tier="devops">
+        <header><h3>DevOps</h3><b data-count="1">0</b></header>
+        <ul>
+          <li>Copado Certified Administrator</li>
+        </ul>
+        <p class="dnote">Non-Salesforce. Eleven Salesforce credentials plus one DevOps credential.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -959,23 +1022,23 @@ addEventListener('resize', function(){ topoInit(); paintTopo(); });
    CERTIFICATION DEPENDENCY GRAPH
    ============================================================ */
 var CERTS = [
-  {id:'assoc', label:'Salesforce Associate',        tier:'Foundation',  x: 88, y:412, req:[], desc:'Entry credential covering the platform\u2019s core concepts and navigation.'},
-  {id:'admin', label:'Administrator',               tier:'Foundation',  x:262, y:412, req:[], desc:'Declarative configuration, security and data management on the platform.'},
-  {id:'aia',   label:'AI Associate',                tier:'Foundation',  x:436, y:412, req:[], desc:'Foundational credential on Salesforce AI, data quality and responsible use.'},
-  {id:'copado',label:'Copado Administrator',        tier:'DevOps',      x:610, y:412, req:[], desc:'Non-Salesforce DevOps credential covering release management and pipelines.'},
+  {id:'found',  label:'Platform Foundations',                  short:'Platform Foundations',   tier:'Foundation', x:115, y:470, w:185, req:[], desc:'Entry credential covering the platform’s core concepts, navigation and data model.'},
+  {id:'admin',  label:'Platform Administrator',                short:'Platform Administrator', tier:'Foundation', x:350, y:470, w:195, req:[], desc:'Declarative configuration, security and data management on the platform.'},
+  {id:'copado', label:'Copado Certified Administrator',        short:'Copado Administrator',   tier:'DevOps',     x:580, y:470, w:190, req:[], desc:'Non-Salesforce DevOps credential covering release management and pipelines.'},
 
-  {id:'pab',   label:'Platform App Builder',        tier:'Platform',    x:150, y:300, req:['admin'], desc:'Declarative application design — data model, business logic, UI and reporting.'},
-  {id:'pd1',   label:'Platform Developer I',        tier:'Platform',    x:350, y:300, req:['admin'], desc:'Programmatic development: Apex, SOQL, Lightning components and testing.'},
-  {id:'dcc',   label:'Data Cloud Consultant',       tier:'Functional',  x:568, y:300, req:[], desc:'Data Cloud implementation — ingestion, harmonisation, identity resolution.'},
+  {id:'pab',    label:'Platform App Builder',                  short:'Platform App Builder',   tier:'Platform',   x:115, y:360, w:190, req:['admin'], desc:'Declarative application design — data model, business logic, UI and reporting.'},
+  {id:'pd1',    label:'Platform Developer I',                  short:'Platform Developer I',   tier:'Platform',   x:350, y:360, w:185, req:['admin'], desc:'Programmatic development: Apex, SOQL, Lightning components and testing.'},
+  {id:'d360',   label:'Data 360 Consultant',                   short:'Data 360 Consultant',    tier:'Functional', x:580, y:360, w:185, req:[], desc:'Data Cloud implementation — ingestion, harmonisation and identity resolution.'},
 
-  {id:'pda',   label:'Platform Data Architect',     tier:'Architect',   x:150, y:188, req:['pab','pd1'], desc:'Enterprise data modelling, governance, large data volumes and migration strategy.'},
-  {id:'svd',   label:'Sharing & Visibility Designer',tier:'Architect',  x:350, y:188, req:['admin','pd1'], desc:'Record access architecture — OWD, role hierarchy, sharing rules, performance.'},
-  {id:'scc',   label:'Sales Cloud Consultant',      tier:'Functional',  x:530, y:188, req:['admin'], desc:'Sales Cloud solution design against real business process.'},
-  {id:'svcc',  label:'Service Cloud Consultant',    tier:'Functional',  x:640, y:130, req:['admin'], desc:'Service Cloud solution design — case management, channels, knowledge.'},
+  {id:'pia',    label:'Platform Integration Architect',        short:'Integration Architect',  tier:'Architect',  x:115, y:250, w:195, req:[], desc:'Integration architecture — REST and SOAP API design, Platform Events, Named Credentials, and system-to-system data exchange at enterprise scale. A standalone exam and the first pillar of the System Architect track.'},
+  {id:'afsales',label:'Agentforce Sales Consultant',           short:'Agentforce Sales',       tier:'Functional', x:350, y:250, w:195, req:['admin'], desc:'Sales Cloud and Agentforce solution design against real business process.'},
+  {id:'afsvc',  label:'Agentforce Service Consultant',         short:'Agentforce Service',     tier:'Functional', x:580, y:250, w:200, req:['admin'], desc:'Service Cloud and Agentforce solution design — case management, channels, knowledge.'},
 
-  {id:'aa',    label:'Application Architect',       tier:'Capstone',    x:250, y: 62, req:['pab','pd1','pda','svd'], desc:'Capstone credential awarded on four prerequisites — two developer-track, two architect-track. Certifies design authority over the full application layer.'}
+  {id:'pda',    label:'Platform Data Architect',               short:'Platform Data Architect',tier:'Architect',  x:180, y:140, w:205, req:['pab','pd1'], desc:'Enterprise data modelling, governance, large data volumes and migration strategy.'},
+  {id:'psva',   label:'Platform Sharing and Visibility Architect', short:'Sharing & Visibility',  tier:'Architect',  x:470, y:140, w:215, req:['admin','pd1'], desc:'Record access architecture — org-wide defaults, role hierarchy, sharing rules and performance at scale.'},
+
+  {id:'aa',     label:'Application Architect',                 short:'Application Architect',  tier:'Capstone',   x:325, y: 30, w:205, req:['pab','pd1','pda','psva'], desc:'Capstone credential awarded on four prerequisites — two developer-track, two architect-track. Certifies design authority over the full application layer.'}
 ];
-var W = {aa:190, pda:170, svd:200, pab:170, pd1:170, dcc:170, scc:170, svcc:170, assoc:160, admin:150, aia:140, copado:180};
 var byId = {}; CERTS.forEach(function(c){ byId[c.id] = c; });
 
 var svgN = $('#cnodes'), svgE = $('#cedges'), NS = 'http://www.w3.org/2000/svg';
@@ -983,7 +1046,7 @@ function mk(t,a){ var e = document.createElementNS(NS,t); for (var k in a) e.set
 var edgeEls = [];
 
 CERTS.forEach(function(c){
-  c.w = W[c.id] || 160; c.h = 46;
+  c.h = 46;
   c.req.forEach(function(r){
     var p = byId[r];
     var x1 = p.x, y1 = p.y - 4, x2 = c.x, y2 = c.y + c.h + 4;
@@ -998,10 +1061,10 @@ CERTS.forEach(function(c){
   var g = mk('g',{'class':'cnode',tabindex:'0',role:'button','aria-label':c.label});
   g.dataset.id = c.id;
   g.appendChild(mk('rect',{x:c.x-c.w/2,y:c.y,width:c.w,height:c.h,rx:11}));
-  var t1 = mk('text',{x:c.x,y:c.y+19,'class':'tier','text-anchor':'middle'}); t1.textContent = c.tier.toUpperCase();
+  var t1 = mk('text',{x:c.x,y:c.y+19,'class':'tier','text-anchor':'middle'});
+  t1.textContent = c.tier.toUpperCase();
   var t2 = mk('text',{x:c.x,y:c.y+34,'text-anchor':'middle'});
-  var lbl = c.label.length > 26 ? c.label.replace(' Designer','') : c.label;
-  t2.textContent = lbl;
+  t2.textContent = c.short;
   g.appendChild(t1); g.appendChild(t2);
   g.addEventListener('click', function(){ select(c.id); });
   g.addEventListener('keydown', function(e){ if (e.key==='Enter'||e.key===' '){ e.preventDefault(); select(c.id); } });
@@ -1025,19 +1088,18 @@ function select(id){
     e.classList.toggle('on', !!on);
     e.classList.toggle('dim', !on);
   });
-  $('#cj-title').textContent = 'Salesforce Certified ' + c.label;
+  $('#cj-title').textContent = (c.id === 'copado' ? '' : 'Salesforce Certified ') + c.label;
   $('#cj-desc').textContent = c.desc;
   var ul = $('#cj-reqs'); ul.innerHTML = '';
-  var reqs = c.req.slice();
-  if (!reqs.length){
+  if (!c.req.length){
     var li = document.createElement('li');
     li.innerHTML = '<s></s>No prerequisite certifications required.';
     ul.appendChild(li);
   } else {
-    reqs.forEach(function(r){
-      var li = document.createElement('li');
-      li.innerHTML = '<s></s>' + byId[r].label;
-      ul.appendChild(li);
+    c.req.forEach(function(r){
+      var item = document.createElement('li');
+      item.innerHTML = '<s></s>' + byId[r].label;
+      ul.appendChild(item);
     });
   }
 }
@@ -1231,7 +1293,7 @@ netInit();
 for (var w=0;w<260;w++) tick();
 paintNet();
 if (!RM) requestAnimationFrame(loop);
-addEventListener('resize', function(){ netInit(); for (var w=0;w<200;w++) tick(); paintNet(); });
+addEventListener('resize', function(){ netInit(); for (var w2=0;w2<200;w2++) tick(); paintNet(); });
 
 /* ============================================================
    EXPERIENCE ACCORDION
@@ -1239,7 +1301,7 @@ addEventListener('resize', function(){ netInit(); for (var w=0;w<200;w++) tick()
 var JOBS = [
   {role:'Associate Manager — Salesforce Technical Lead', org:'Accenture', when:'Sep 2024 — Present', open:true, pts:[
     'Own end-to-end Salesforce technical delivery for global enterprise clients — architecture, solution design and offshore execution across multi-cloud and custom-built implementations.',
-    'Spearhead the programme\u2019s generative AI engineering initiative as primary technical owner, embedding Agentforce Vibes, Claude and GitHub Copilot into code generation, refactoring, test authoring and review — driving approximately 60% efficiency gains.',
+    'Spearhead the programme’s generative AI engineering initiative as primary technical owner, embedding Agentforce Vibes, Claude and GitHub Copilot into code generation, refactoring, test authoring and review — driving approximately 60% efficiency gains.',
     'Translate complex enterprise requirements into scalable, reusable, governor-limit-aware designs, partnering with onshore architects and stakeholders through solution definition and design review.',
     'Direct an offshore pod of developers and QA engineers across multiple parallel sprints, enforcing engineering standards for bulkification, trigger frameworks, asynchronous processing and security and sharing models.',
     'Steward critical business use cases from requirement gathering through deployment and hypercare, resolving Severity-1 production escalations within defined SLAs.',
